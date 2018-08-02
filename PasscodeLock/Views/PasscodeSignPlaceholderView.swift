@@ -48,11 +48,24 @@ open class PasscodeSignPlaceholderView: UIView {
     public required init?(coder aDecoder: NSCoder) {
         
         super.init(coder: aDecoder)
+        
+        setupInnerPinCircle()
     }
     
     open override var intrinsicContentSize : CGSize {
         
         return CGSize(width: 16, height: 16)
+    }
+    
+    fileprivate var innerPinCircleView: UIView!
+    
+    fileprivate func setupInnerPinCircle() {
+        innerPinCircleView = UIView(frame: CGRect(x: 3, y: 3, width: 10, height: 10))
+        innerPinCircleView.backgroundColor = inactiveColor
+        innerPinCircleView.layer.cornerRadius = 5
+        innerPinCircleView.isHidden = true
+        
+        addSubview(innerPinCircleView)
     }
     
     fileprivate func setupView() {
@@ -83,10 +96,9 @@ open class PasscodeSignPlaceholderView: UIView {
             initialSpringVelocity: 0,
             options: [],
             animations: {
-                
-                self.backgroundColor = colors.backgroundColor
+                self.innerPinCircleView.isHidden = state == .inactive
+                self.innerPinCircleView.backgroundColor = colors.backgroundColor
                 self.layer.borderColor = colors.borderColor.cgColor
-                
             },
             completion: nil
         )
