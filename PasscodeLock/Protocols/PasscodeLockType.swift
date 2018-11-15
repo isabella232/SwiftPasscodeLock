@@ -10,11 +10,12 @@ import Foundation
 
 public protocol PasscodeLockType {
     
-    var delegate: PasscodeLockTypeDelegate? {get set}
-    var configuration: PasscodeLockConfigurationType {get}
-    var repository: PasscodeRepositoryType {get}
-    var state: PasscodeLockStateType {get}
-    var isTouchIDAllowed: Bool {get}
+    var delegate: PasscodeLockTypeDelegate? { get set }
+    var configuration: PasscodeLockConfigurationType { get }
+    var repository: PasscodeRepositoryType { get }
+    var state: PasscodeLockStateType { get }
+    var isTouchIDAllowed: Bool { get }
+    var biometricType: BiometricType { get }
     
     func addSign(_ sign: String)
     func removeSign()

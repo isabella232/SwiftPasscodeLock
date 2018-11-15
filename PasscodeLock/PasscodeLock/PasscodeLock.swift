@@ -9,10 +9,33 @@
 import Foundation
 import LocalAuthentication
 
+public enum BiometricType: Int {
+    case none
+    case touch
+    case face
+}
+
 open class PasscodeLock: PasscodeLockType {
     
     open weak var delegate: PasscodeLockTypeDelegate?
     open let configuration: PasscodeLockConfigurationType
+    
+    public let biometricType: BiometricType = {
+        let authContext = LAContext()
+        if #available(iOS 11, *) {
+            let _ = authContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+            switch(authContext.biometryType) {
+            case .none:
+                return .none
+            case .touchID:
+                return .touch
+            case .faceID:
+                return .face
+            }
+        } else {
+            return authContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) ? .touch : .none
+        }
+    }()
     
     open var repository: PasscodeRepositoryType {
         return configuration.repository
@@ -93,9 +116,6 @@ open class PasscodeLock: PasscodeLockType {
     }
     
     fileprivate func isTouchIDEnabled() -> Bool {
-        
-        let context = LAContext()
-        
-        return context.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil)
+        return biometricType != .none
     }
 }

@@ -27,13 +27,15 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
         }
     }
     
-    @IBOutlet open weak var titleLabel: UILabel?
-    @IBOutlet open weak var descriptionLabel: UILabel?
+    @IBOutlet weak var logoImageView: UIImageView!
+    
     @IBOutlet open var placeholders: [PasscodeSignPlaceholderView] = [PasscodeSignPlaceholderView]()
     @IBOutlet open weak var cancelButton: UIButton?
     @IBOutlet open weak var deleteSignButton: UIButton?
     @IBOutlet open weak var touchIDButton: UIButton?
     @IBOutlet open weak var placeholdersX: NSLayoutConstraint?
+    @IBOutlet open weak var errorView: UIView!
+    @IBOutlet open weak var descriptionLabel: UILabel!
     
     open var successCallback: ((_ lock: PasscodeLockType) -> Void)?
     open var canceledCallback: (() -> Void)?
@@ -85,7 +87,6 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
         super.viewDidLoad()
         
         updatePasscodeView()
-        deleteSignButton?.isEnabled = false
         
         setupEvents()
     }
@@ -100,13 +101,24 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
     }
     
     internal func updatePasscodeView() {
-        
-        titleLabel?.text = passcodeLock.state.title
+        errorView.alpha = 0
         descriptionLabel?.text = passcodeLock.state.description
         if (!passcodeLock.state.isCancellableAction) {
-            cancelButton?.setTitle("", for: .normal)
+            cancelButton?.isHidden = true
         }
+        
+        switch passcodeLock.biometricType {
+        case .face:
+            touchIDButton?.setImage(passcodeLock.configuration.faceIDIcon, for: .normal)
+        case .touch:
+            touchIDButton?.setImage(passcodeLock.configuration.touchIDIcon, for: .normal)
+        default:
+            break
+        }
+        
         touchIDButton?.isHidden = !passcodeLock.isTouchIDAllowed
+        
+        updateCancelAndDeleteButtons(passcodeCount: 0)
     }
     
     // MARK: - Events
@@ -203,6 +215,13 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
         placeholdersX?.constant = -40
         view.layoutIfNeeded()
         
+        UIView.animate(withDuration: 0.5, animations: {
+            self.errorView.alpha = 1
+            self.descriptionLabel.alpha = 0
+        }) { (_) in
+            self.resetErrorAnimate(delay: 0.5)
+        }
+        
         UIView.animate(
             withDuration: 0.5,
             delay: 0,
@@ -219,6 +238,13 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
         })
     }
     
+    internal func resetErrorAnimate(delay: TimeInterval = 0) {
+        UIView.animate(withDuration: 0.3, delay: delay, animations: {
+            self.errorView.alpha = 0
+            self.descriptionLabel.alpha = 1
+        }, completion: nil)
+    }
+    
     internal func animatePlaceholders(_ placeholders: [PasscodeSignPlaceholderView], toState state: PasscodeSignPlaceholderView.State) {
         
         for placeholder in placeholders {
@@ -232,6 +258,16 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
         guard index < placeholders.count && index >= 0 else { return }
         
         placeholders[index].animateState(state)
+    }
+    
+    fileprivate func updateCancelAndDeleteButtons(passcodeCount: Int) {
+        if passcodeCount > 0 {
+            cancelButton?.isHidden = true
+            deleteSignButton?.isHidden = false
+        } else {
+            cancelButton?.isHidden = !passcodeLock.state.isCancellableAction
+            deleteSignButton?.isHidden = true
+        }
     }
 
     // MARK: - PasscodeLockDelegate
@@ -254,13 +290,16 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
         
         updatePasscodeView()
         animatePlaceholders(placeholders, toState: .inactive)
-        deleteSignButton?.isEnabled = false
+        updateCancelAndDeleteButtons(passcodeCount: 0)
     }
     
     open func passcodeLock(_ lock: PasscodeLockType, addedSignAtIndex index: Int) {
         
         animatePlacehodlerAtIndex(index, toState: .active)
-        deleteSignButton?.isEnabled = true
+        updateCancelAndDeleteButtons(passcodeCount: index + 1)
+        if (index == 0) {
+            resetErrorAnimate()
+        }
     }
     
     open func passcodeLock(_ lock: PasscodeLockType, removedSignAtIndex index: Int) {
@@ -268,8 +307,7 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
         animatePlacehodlerAtIndex(index, toState: .inactive)
         
         if index == 0 {
-            
-            deleteSignButton?.isEnabled = false
+            updateCancelAndDeleteButtons(passcodeCount: index)
         }
     }
 }

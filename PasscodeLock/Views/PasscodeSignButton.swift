@@ -35,12 +35,14 @@ open class PasscodeSignButton: UIButton {
         super.init(frame: frame)
         
         setupView()
+        layer.cornerRadius = 4
         setupActions()
     }
     
     public required init?(coder aDecoder: NSCoder) {
         
         super.init(coder: aDecoder)
+        layer.cornerRadius = 4
         setupActions()
     }
 
@@ -58,13 +60,8 @@ open class PasscodeSignButton: UIButton {
         }
     }
 
-    override open func draw(_ rect: CGRect) {
-        super.draw(rect)
-        self.layer.cornerRadius = rect.width/2
-    }
 
 
-    
     fileprivate func setupActions() {
         
         addTarget(self, action: #selector(PasscodeSignButton.handleTouchDown), for: .touchDown)
@@ -84,7 +81,7 @@ open class PasscodeSignButton: UIButton {
     fileprivate func animateBackgroundColor(_ color: UIColor) {
         
         UIView.animate(
-            withDuration: 0.3,
+            withDuration: 0.4,
             delay: 0.0,
             usingSpringWithDamping: 1,
             initialSpringVelocity: 0.0,

@@ -59,7 +59,7 @@ open class PasscodeSignPlaceholderView: UIView {
     
     fileprivate var innerPinCircleView: UIView!
     
-    fileprivate func setupInnerPinCircle() {
+    open func setupInnerPinCircle() {
         innerPinCircleView = UIView(frame: CGRect(x: 3, y: 3, width: 10, height: 10))
         innerPinCircleView.backgroundColor = inactiveColor
         innerPinCircleView.layer.cornerRadius = 5
@@ -69,10 +69,6 @@ open class PasscodeSignPlaceholderView: UIView {
     }
     
     fileprivate func setupView() {
-        
-        layer.cornerRadius = 8
-        layer.borderWidth = 1
-        layer.borderColor = activeColor.cgColor
         backgroundColor = inactiveColor
     }
     

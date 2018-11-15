@@ -15,4 +15,6 @@ public protocol PasscodeLockConfigurationType {
     var isTouchIDAllowed: Bool {get}
     var shouldRequestTouchIDImmediately: Bool {get}
     var maximumInccorectPasscodeAttempts: Int {get}
+    var faceIDIcon: UIImage? { get }
+    var touchIDIcon: UIImage? { get }
 }
