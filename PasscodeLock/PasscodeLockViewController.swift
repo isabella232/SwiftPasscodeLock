@@ -88,7 +88,9 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
         
         updatePasscodeView()
         
-        setupEvents()
+        if passcodeConfiguration.shouldPresentWhenAppEnteringForeground {
+            setupEvents()
+        }
     }
     
     open override func viewDidAppear(_ animated: Bool) {
