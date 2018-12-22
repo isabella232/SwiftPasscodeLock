@@ -235,6 +235,7 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
                 self.view.layoutIfNeeded()
             },
             completion: { completed in
+                self.deleteSignButton?.isEnabled = true
                 self.isPlaceholdersAnimationCompleted = true
                 self.animatePlaceholders(self.placeholders, toState: .inactive)
         })
