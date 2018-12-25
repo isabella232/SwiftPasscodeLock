@@ -34,7 +34,6 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
     @IBOutlet open weak var deleteSignButton: UIButton?
     @IBOutlet open weak var touchIDButton: UIButton?
     @IBOutlet open weak var placeholdersX: NSLayoutConstraint?
-    @IBOutlet open weak var errorView: UIView!
     @IBOutlet open weak var descriptionLabel: UILabel!
     
     open var successCallback: ((_ lock: PasscodeLockType) -> Void)?
@@ -103,7 +102,6 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
     }
     
     internal func updatePasscodeView() {
-        errorView.alpha = 0
         descriptionLabel?.text = passcodeLock.state.description
         if (!passcodeLock.state.isCancellableAction) {
             cancelButton?.isHidden = true
@@ -218,7 +216,6 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
         view.layoutIfNeeded()
         
         UIView.animate(withDuration: 0.5, animations: {
-            self.errorView.alpha = 1
             self.descriptionLabel.alpha = 0
         }) { (_) in
             self.resetErrorAnimate(delay: 0.5)
@@ -243,7 +240,6 @@ open class PasscodeLockViewController: UIViewController, PasscodeLockTypeDelegat
     
     internal func resetErrorAnimate(delay: TimeInterval = 0) {
         UIView.animate(withDuration: 0.3, delay: delay, animations: {
-            self.errorView.alpha = 0
             self.descriptionLabel.alpha = 1
         }, completion: nil)
     }
