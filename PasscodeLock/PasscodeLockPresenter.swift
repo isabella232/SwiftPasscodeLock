@@ -16,7 +16,7 @@ open class PasscodeLockPresenter {
     fileprivate let passcodeConfiguration: PasscodeLockConfigurationType
     fileprivate let passcodeState: PasscodeLockStateType
     
-    open let passcodeLockVC: PasscodeLockViewController
+    public let passcodeLockVC: PasscodeLockViewController
     open var isPasscodePresented = false
     
     public init(mainWindow window: UIWindow?,
@@ -70,7 +70,7 @@ open class PasscodeLockPresenter {
             delay: 0,
             usingSpringWithDamping: 1,
             initialSpringVelocity: 0,
-            options: UIViewAnimationOptions(),
+            options: UIView.AnimationOptions(),
             animations: {
                 self.passcodeLockWindow?.alpha = 0
             },

@@ -10,6 +10,11 @@ import Foundation
 import PasscodeLock
 
 struct PasscodeLockConfiguration: PasscodeLockConfigurationType {
+    var shouldPresentWhenAppEnteringForeground: Bool = true
+    
+    var faceIDIcon: UIImage? = nil
+    
+    var touchIDIcon: UIImage? = nil
     
     let repository: PasscodeRepositoryType
     let passcodeLength = 4

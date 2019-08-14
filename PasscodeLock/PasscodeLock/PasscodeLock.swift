@@ -18,7 +18,7 @@ public enum BiometricType: Int {
 open class PasscodeLock: PasscodeLockType {
     
     open weak var delegate: PasscodeLockTypeDelegate?
-    open let configuration: PasscodeLockConfigurationType
+    public let configuration: PasscodeLockConfigurationType
     
     public let biometricType: BiometricType = {
         let authContext = LAContext()
@@ -31,6 +31,8 @@ open class PasscodeLock: PasscodeLockType {
                 return .touch
             case .faceID:
                 return .face
+            @unknown default:
+                fatalError()
             }
         } else {
             return authContext.canEvaluatePolicy(.deviceOwnerAuthenticationWithBiometrics, error: nil) ? .touch : .none
